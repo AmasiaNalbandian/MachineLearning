@@ -1,7 +1,8 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import classification_report
 import constants
+from stats import get_classification_report
+import time
 
 def tune_knn(X_train, y_train, param_grid, cv, scoring='accuracy'):
     knn_classifier = KNeighborsClassifier()
@@ -18,10 +19,16 @@ def knn(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
     best_knn_model, best_knn_params = tune_knn(X_train, y_train, param_grid, cv)
     print("Best Hyperparameters:", best_knn_params)
 
-    # You can use best_knn_model for predictions and further evaluation
-    y_pred = best_knn_model.predict(X_test)
+    start_time = time.time()
+    y_test_pred = best_knn_model.predict(X_test)
+    elapsed_time = time.time() - start_time
 
-    report = classification_report(y_test, y_pred)
-    print("Classification Report:\n", report)
+    y_train_pred = best_knn_model.predict(X_train)
+
+    # Print the classification reports
+    get_classification_report(y_train, y_train_pred, "knn train report")
+    get_classification_report(y_test, y_test_pred, "knn test report")
+
+    print(f"K-NN took {elapsed_time} seconds to execute.")
 
     return best_knn_model, best_knn_params

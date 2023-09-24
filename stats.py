@@ -3,6 +3,11 @@ import numpy as np
 from sklearn.model_selection import validation_curve, learning_curve
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import classification_report
+
+def get_classification_report(y_set, y_pred, title=None, digits=6):
+    report = classification_report(y_set, y_pred, digits=digits)
+    print(f"\n{title}\n", report)
 
 
 #Print all the stats

@@ -1,32 +1,33 @@
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, classification_report
 from scipy.stats import randint
 from sklearn.ensemble import AdaBoostClassifier
+from stats import get_classification_report
+import time
 import constants
 
-def dt(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
+def dt(X_train, X_test, y_train, y_test, param_grid):
     best_model, best_params = useGridSearch(X_train, y_train, param_grid)
-    # best_model, best_params = useRandomizedSearch(X_train, y_train)
 
     # Use the best model for predictions
+    start_time = time.time()
     y_pred = best_model.predict(X_test)
+    elapsed_time = time.time() - start_time
+    print(f"Decision Tree took {elapsed_time} seconds to execute.")
+
+    y_train_pred = best_model.predict(X_train)
 
     # Evaluate the model's accuracy and classification report
-    accuracy = accuracy_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred)
+    get_classification_report(y_train, y_train_pred, "Decision tree train report")
+    get_classification_report(y_test, y_pred, "Decision tree test report")
 
     print("Best Hyperparameters:", best_params)
-    print("cross validation:", cv)
-    print("Accuracy:", accuracy)
-    print("Classification Report:\n", report)
     
     return best_model, best_params
 
 
 def useGridSearch(X_train, y_train, param_grid):
     grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=constants.CV, scoring='accuracy')
-
 
     # Fit the grid search to the training data
     grid_search.fit(X_train, y_train)
@@ -79,14 +80,17 @@ def ada_boosted_dt(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV
     # Get the best model and parameters
     best_ada_dt_model = grid_search.best_estimator_
     best_ada_dt_params = grid_search.best_params_
+    print("Best AdaBoost Decision Tree Hyperparameters:", best_ada_dt_params)
 
     # Use the best model for predictions
-    y_pred = best_ada_dt_model.predict(X_test)
+    start_time = time.time()
+    y_test_pred = best_ada_dt_model.predict(X_test)
+    elapsed_time = time.time() - start_time
+    y_train_pred = best_ada_dt_model.predict(X_train)
 
-    # Generate a classification report
-    report = classification_report(y_test, y_pred)
+    # Generate a classification reports
+    get_classification_report(y_train, y_train_pred, "NN train report")
+    get_classification_report(y_test, y_test_pred, "NN test report")
 
-    print("Best AdaBoost Decision Tree Hyperparameters:", best_ada_dt_params)
-    print("Classification Report:\n", report)
-
+    print(f"DTADA Boosting took {elapsed_time} seconds to execute.")
     return best_ada_dt_model, best_ada_dt_params
