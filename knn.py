@@ -1,6 +1,7 @@
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import classification_report
+import constants
 
 def tune_knn(X_train, y_train, param_grid, cv, scoring='accuracy'):
     knn_classifier = KNeighborsClassifier()
@@ -13,13 +14,7 @@ def tune_knn(X_train, y_train, param_grid, cv, scoring='accuracy'):
 
     return best_model, best_params
 
-def knn(X_train, X_test, y_train, y_test, cv):
-    param_grid = {
-        'n_neighbors': [3, 5, 7],
-        'weights': ['distance'],
-        'p': [1, 2]
-    }
-
+def knn(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
     best_knn_model, best_knn_params = tune_knn(X_train, y_train, param_grid, cv)
     print("Best Hyperparameters:", best_knn_params)
 

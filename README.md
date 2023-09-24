@@ -32,7 +32,7 @@ https://www.kaggle.com/datasets/sakshigoyal7/credit-card-customers
 To run the following code, you will need to have python installed. The specific version used for development was python 3.11.5. 
 
 ### Installing Packages
-All the required packages are places in the folder called `requirements.txt`. 
+All the required packages are placed in the folder called `requirements.txt`. 
 
 To install all packages run the following:
 ```

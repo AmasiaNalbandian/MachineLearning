@@ -15,15 +15,9 @@ def tune_svm(X_train, y_train, param_grid, cv, scoring='accuracy'):
 
     return best_model, best_params
 
-def svm(X_train, X_test, y_train, y_test, cv):
+def svm(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
     X_train, y_train = get_subset(X_train, y_train)
     print("running v2")
-    param_grid = {
-        'C': [0.1, 1, 10, 100],
-        'kernel': ['linear', 'poly', 'rbf'],
-        'gamma': ['scale', 'auto', 0.1, 1],
-        'degree': [2, 3, 4]
-    }
 
     best_svm_model, best_svm_params = tune_svm(X_train, y_train, param_grid, cv)
     print("Best Hyperparameters:", best_svm_params)
@@ -37,7 +31,7 @@ def svm(X_train, X_test, y_train, y_test, cv):
     return best_svm_model, best_svm_params
 
 # This function is used to get a subset of data to experiment faster with the SVMs
-def get_subset(X_train, y_train, subset_size=5000):
+def get_subset(X_train, y_train, subset_size=100):
     random_indices = np.random.choice(len(X_train), subset_size, replace=False)
     X_subset = X_train[random_indices]
     y_subset = y_train.iloc[random_indices]

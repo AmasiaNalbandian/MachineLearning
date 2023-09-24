@@ -5,8 +5,8 @@ from scipy.stats import randint
 from sklearn.ensemble import AdaBoostClassifier
 import constants
 
-def dt(X_train, X_test, y_train, y_test, cv):
-    best_model, best_params = useGridSearch(X_train, y_train)
+def dt(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
+    best_model, best_params = useGridSearch(X_train, y_train, param_grid)
     # best_model, best_params = useRandomizedSearch(X_train, y_train)
 
     # Use the best model for predictions
@@ -17,20 +17,14 @@ def dt(X_train, X_test, y_train, y_test, cv):
     report = classification_report(y_test, y_pred)
 
     print("Best Hyperparameters:", best_params)
-    print("cross validation:", constants.CV)
+    print("cross validation:", cv)
     print("Accuracy:", accuracy)
     print("Classification Report:\n", report)
     
     return best_model, best_params
 
 
-def useGridSearch(X_train, y_train):
-    # Create a GridSearchCV object for hyperparameter tuning
-    param_grid = {
-        'max_depth': [8,9,7,6,5],  # You can include 'None' for unlimited depth
-        'min_samples_split': [2, 5, 3, 13],
-        'min_samples_leaf': [1, 5, 9]
-    }
+def useGridSearch(X_train, y_train, param_grid):
     grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=constants.CV, scoring='accuracy')
 
 
@@ -71,16 +65,9 @@ def useRandomizedSearch(X_train, y_train):
 
     return best_model, best_params
 
-def ada_boosted_dt(X_train, X_test, y_train, y_test, cv):
+def ada_boosted_dt(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
     # Create a base Decision Tree classifier
     base_dt = DecisionTreeClassifier()
-
-    # Define the parameter grid for AdaBoost
-    param_grid = {
-        'base_estimator__max_depth': [None, 10, 20, 30],  # Adjust max_depth as needed
-        'n_estimators': [50, 100, 200],  # Number of Decision Trees in the ensemble
-        'learning_rate': [0.01, 0.1, 1.0]
-    }
 
     # Create an AdaBoost classifier with Decision Tree as the base estimator
     ada_dt_classifier = AdaBoostClassifier(base_estimator=base_dt)

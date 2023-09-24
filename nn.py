@@ -14,12 +14,7 @@ def tune_neural_network(X_train, y_train, param_grid, cv, scoring='accuracy'):
 
     return best_model, best_params
 
-def nn(X_train, X_test, y_train, y_test, cv):
-    param_grid = {
-        'hidden_layer_sizes': [(32,), (64,), (128,), (256,), (512,)],
-        'learning_rate_init': [0.001, 0.01, 0.1, 0.0001]
-    }
-
+def nn(X_train, X_test, y_train, y_test, param_grid, cv=constants.CV):
     best_nn_model, best_nn_params = tune_neural_network(X_train, y_train, param_grid, cv)
     print("Best Hyperparameters:", best_nn_params)
 
