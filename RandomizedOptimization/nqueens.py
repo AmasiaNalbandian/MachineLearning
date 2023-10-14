@@ -37,7 +37,7 @@ def run_queens():
         problem = mlrose_hiive.DiscreteOpt(length = r, fitness_fn = queens_problem, maximize = True, max_val = 2)
         problem.set_mimic_fast_mode(True)
         
-        run_ro(problem)
+        run_ro(problem, "n-Queens", r)
 
 
 

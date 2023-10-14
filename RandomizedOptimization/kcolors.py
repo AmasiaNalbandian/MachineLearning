@@ -36,7 +36,7 @@ def run_kcolors():
         )
         problem.set_mimic_fast_mode(True)
         
-        run_ro(problem)
+        run_ro(problem, "k-Colors", r)
 
 
 

@@ -22,6 +22,6 @@ def run_knapsack():
         problem = mlrose_hiive.DiscreteOpt(length = r, fitness_fn = ks_problem, maximize = True, max_val = 2)
         problem.set_mimic_fast_mode(True)
 
-        run_ro(problem)
+        run_ro(problem, "Knapsack", r)
 
 
