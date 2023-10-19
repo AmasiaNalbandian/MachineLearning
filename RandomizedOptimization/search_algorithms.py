@@ -1,6 +1,6 @@
 import mlrose_hiive
 import time 
-from plots import fit_v_iteration, fevals_vs_time, fevals_v_iteration
+from plots import fit_v_iteration, fevals_v_iteration
 # In this file, there are four local random search algorithms which are: 
 # 1. Randomized Hell Climbing (RHC)
 # 2. Simulated Annealing (SA)
@@ -21,6 +21,10 @@ def run_optimization(problem, algorithm, algorithm_name):
         time_log.append(time.time() - start_time)
     execution_time = time_log[-1] if time_log else 0
     print(f"Execution Time for {algorithm_name}: {execution_time:.6f} seconds")
+    final_fevals = len(best_curve)
+    # print(f"Final Fitness for {algorithm_name}: {best_fitness}")
+    # print(f"Total Function Evaluations for {algorithm_name}: {final_fevals}")
+
     return best_fitness, best_curve, time_log
 
     # print(f"Best State: {best_state}")
@@ -49,6 +53,15 @@ def run_ro(problem, fitness_problem, problem_size):
     ga_best_fitness, ga_best_curve, ga_time_log = run_optimization(problem, ga, "GA")
     mimic_best_fitness, mimic_best_curve, mimic_time_log = run_optimization(problem, mimic, "MIMIC")
 
-    fit_v_iteration(fitness_problem, problem_size, rhc_best_curve, sa_best_curve, ga_best_curve, mimic_best_curve)
-    fevals_vs_time(fitness_problem, problem_size, rhc_best_curve, sa_best_curve, ga_best_curve, mimic_best_curve, rhc_time_log, sa_time_log, ga_time_log, mimic_time_log)
-    fevals_v_iteration(fitness_problem, problem_size, rhc_best_curve, sa_best_curve, ga_best_curve, mimic_best_curve)
+    curves_list = [
+        { "curve": rhc_best_curve, "label": "RHC", "time_log": rhc_time_log },
+        { "curve": sa_best_curve, "label": "SA", "time_log": sa_time_log },
+        { "curve": ga_best_curve, "label": "GA", "time_log": ga_time_log },
+        { "curve": mimic_best_curve, "label": "MIMIC", "time_log": mimic_time_log }
+    ]
+    fit_v_iteration(fitness_problem, problem_size, curves_list)
+    # fevals_vs_time(fitness_problem, problem_size, rhc_best_curve, sa_best_curve, ga_best_curve, mimic_best_curve, rhc_time_log, sa_time_log, ga_time_log, mimic_time_log)
+    fevals_v_iteration(fitness_problem, problem_size, curves_list)
+    return curves_list
+
+    

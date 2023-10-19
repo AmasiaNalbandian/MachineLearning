@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
+import pandas as pd
 
 root_folder = "figures"
 
@@ -18,52 +20,57 @@ def save_plot(plt, fitness_problem, size, plot):
     plt.savefig(file_path)
     plt.close() 
 
-
-def fit_v_iteration(fitness_problem, size, rhc_curve, sa_curve, ga_curve, mimic_curve):
+# Send a list of curves to plot fitness/iteration
+def fit_v_iteration(fitness_problem, size, curves, subtitle=""):
+    title="Fitness vs. Iteration"
     plt.figure(figsize=(8, 6))
-    plt.plot(rhc_curve[:, 0], label='RHC', linestyle='-')
-    plt.plot(sa_curve[:, 0], label='SA', linestyle='-')
-    plt.plot(ga_curve[:, 0], label='GA', linestyle='-')
-    plt.plot(mimic_curve[:, 0], label='MIMIC', linestyle='-')
+    
+    for curve_data in curves:
+        curve, label = curve_data['curve'], curve_data['label']
+        plt.plot(curve[:, 0], label=label, linestyle='-')
+        print(f"Final Fitness for {label} {subtitle}: {curve[-1, 0]}")
+
+
     plt.xlabel('Iterations')
     plt.ylabel('Fitness')
-    plt.title(f'{fitness_problem}\nFitness vs. Iteration')
+    plt.title(f'{fitness_problem}\n{title}\n{subtitle}')
     plt.legend()
     plt.grid()
     # plt.show()
-    save_plot(plt, fitness_problem, size, "Fitness_vs_Iteration")
-
-
+    save_plot(plt, fitness_problem, size, f"Fitness_vs_Iteration{subtitle}")
 
 # Function Evaluations vs. Iteration
-def fevals_v_iteration(fitness_problem, size, rhc_curve, sa_curve, ga_curve, mimic_curve):
+def fevals_v_iteration(fitness_problem, size, curves, subtitle=""):
+    title="FEvals vs. Iteration"
     plt.figure(figsize=(8, 6))
-    plt.plot(rhc_curve[:, 1], label='RHC', linestyle='-')
-    plt.plot(sa_curve[:, 1], label='SA', linestyle='-')
-    plt.plot(ga_curve[:, 1], label='GA', linestyle='-')
-    plt.plot(mimic_curve[:, 1], label='MIMIC', linestyle='-')
+
+    for curve_data in curves:
+        curve, label = curve_data['curve'], curve_data['label']
+        plt.plot(curve[:, 1], label=label, linestyle='-')
+        print(f"Final FEvals for {fitness_problem} {label} : {curve[-1, 1]}")
+
     plt.xlabel('Iterations')
-    plt.ylabel('Fitness')
-    plt.title(f'{fitness_problem}\nFEvals vs. Iteration')
-    plt.legend()
-    plt.grid()
-    # plt.show()
-    save_plot(plt, fitness_problem, size, "FEVals_vs_Iteration")
-
-
-# Function Evaluations vs. Time
-def fevals_vs_time(fitness_problem, p_size, rhc_curve, sa_curve, ga_curve, mimic_curve, rhc_time, sa_time, ga_time, mimic_time):
-    plt.figure(figsize=(8, 6))
-    plt.plot(rhc_time, rhc_curve[:, 1], label='RHC', linestyle='-')
-    plt.plot(sa_time, sa_curve[:, 1], label='SA', linestyle='-')
-    plt.plot(ga_time, ga_curve[:, 1], label='GA', linestyle='-')
-    plt.plot(mimic_time, mimic_curve[:, 1], label='MIMIC', linestyle='-')
-    plt.xlabel('Wall Clock Time (seconds)')
     plt.ylabel('FEvals')
-    plt.title(f'{fitness_problem}\nFEvals vs. Wall Clock Time')
+    plt.title(f'{fitness_problem}\n{title}\n{subtitle}')
     plt.legend()
     plt.grid()
     # plt.show()
+    save_plot(plt, fitness_problem, size, f"FEvals_vs_Iteration{subtitle}")
 
-    save_plot(plt, fitness_problem, p_size, "FEvals_vs_Time")
+def timings_v_problem_size(fitness_problem, sizes, timings, subtitle=""):
+    title = "Time vs. Problem Size"
+    plt.figure(figsize=(8, 6))
+
+    # Loop through timings and plot each algorithm's time against sizes
+    for algo, time_log in timings.items():
+        plt.plot(sizes, time_log, label=algo, linestyle='-')
+        print(f"Final Time for {algo} on size {sizes[-1]}: {time_log[-1]}")
+
+    plt.xlabel('Problem Size')
+    plt.ylabel('Time (s)')
+    plt.title(f'{fitness_problem}\n{title}')
+    plt.legend()
+    plt.grid()
+    # Save the plot
+    save_plot(plt, fitness_problem, sizes[-1], "Time_vs_ProblemSize{subtitle}")
 

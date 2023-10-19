@@ -2,6 +2,7 @@ import mlrose_hiive
 import numpy as np
 from search_algorithms import run_ro
 import networkx as nx
+from plots import timings_v_problem_size
 
 np.random.seed(13) #set random seed for regeneration
 
@@ -26,7 +27,15 @@ def graph_coloring_fitness(state):
 
 
 def run_kcolors():
-    for r in range(25,150,25):
+    timings = {
+        "RHC": [],
+        "SA": [],
+        "GA": [],
+        "MIMIC": []
+    }
+    sizes = list(range(25, 200, 25))
+
+    for r in sizes:
         print(f"length: {r}")
         problem = mlrose_hiive.DiscreteOpt(
             length=len(G.nodes),
@@ -36,8 +45,7 @@ def run_kcolors():
         )
         problem.set_mimic_fast_mode(True)
         
-        run_ro(problem, "k-Colors", r)
-
-
-
-
+        curves_list = run_ro(problem, "k-Colors", r)
+        for curve_info in curves_list:
+            timings[curve_info["label"]].append(sum(curve_info["time_log"]))
+    timings_v_problem_size("k-Colors", sizes, timings)

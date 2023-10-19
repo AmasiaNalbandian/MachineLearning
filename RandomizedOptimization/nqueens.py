@@ -1,6 +1,7 @@
 import mlrose_hiive
 import numpy as np
 from search_algorithms import run_ro
+from plots import timings_v_problem_size
 
 np.random.seed(13) #set random seed for regeneration
 
@@ -29,7 +30,17 @@ def queens_max(state):
 
 
 def run_queens():
-    for r in range(25,150,25):
+    timings = {
+        "RHC": [],
+        "SA": [],
+        "GA": [],
+        "MIMIC": []
+    }
+    sizes = list(range(25, 200, 25))
+
+
+
+    for r in sizes:
         print(f"length: {r}")
 
         # knapsack problem
@@ -37,8 +48,9 @@ def run_queens():
         problem = mlrose_hiive.DiscreteOpt(length = r, fitness_fn = queens_problem, maximize = True, max_val = 2)
         problem.set_mimic_fast_mode(True)
         
-        run_ro(problem, "n-Queens", r)
-
-
+        curves_list = run_ro(problem, "n-Queens", r)
+        for curve_info in curves_list:
+            timings[curve_info["label"]].append(sum(curve_info["time_log"]))
+    timings_v_problem_size("n-Queens", sizes, timings)
 
 
