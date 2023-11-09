@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.model_selection import learning_curve
-import constants
+from . import constants
 
 def plot_learning_curve(model, X_train, y_train, scoring, title, cv=constants.CV):
     train_sizes, train_scores, test_scores = learning_curve(
